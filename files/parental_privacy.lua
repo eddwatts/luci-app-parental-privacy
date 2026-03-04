@@ -86,7 +86,7 @@ function action_extend()
 
     enable_all("0")
     uci:commit("wireless")
-    sys.call("wifi reload")
+    luci.sys.call("ubus call network.interface.kids " .. (state == "0" and "up" or "down"))
 
     -- Temporary background timer with PID tracking
     sys.call(string.format(
