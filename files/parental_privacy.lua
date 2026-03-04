@@ -222,23 +222,23 @@ function action_apply()
                 end
 
                 local days_map = {Mon="1", Tue="2", Wed="3", Thu="4", Fri="5", Sat="6", Sun="0"}
+
                 -- Determine the UTC offset in whole hours so cron (which runs in UTC
                 -- on most OpenWrt builds) fires at the correct wall-clock time.
-                -- We use the POSIX trick: compare `date +%H` in local time against
-                -- `TZ=UTC date +%H` and compute the signed difference.
+                -- `date +%z` returns the POSIX offset e.g. +0530 or -0700, which is
+                -- reliable at midnight unlike comparing %H across two calls.
                 local tz_offset = 0
                 do
-                    local local_h_str = sys.exec("date +%H 2>/dev/null"):match("(%d+)")
-                    local utc_h_str   = sys.exec("TZ=UTC date +%H 2>/dev/null"):match("(%d+)")
-                    if local_h_str and utc_h_str then
-                        local lh = tonumber(local_h_str) or 0
-                        local uh = tonumber(utc_h_str)   or 0
-                        tz_offset = lh - uh
-                        -- Clamp to [-12, 14] to guard against midnight-crossing artefacts
-                        if tz_offset > 14  then tz_offset = tz_offset - 24 end
-                        if tz_offset < -12 then tz_offset = tz_offset + 24 end
+                    local z = sys.exec("date +%z 2>/dev/null"):match("([+-]%d%d%d%d)")
+                    if z then
+                        local sign  = (z:sub(1,1) == "-") and -1 or 1
+                        local hours = tonumber(z:sub(2,3)) or 0
+                        local mins  = tonumber(z:sub(4,5)) or 0
+                        -- Round to nearest whole hour (handles +0530, +0545, etc.)
+                        tz_offset = sign * math.floor(hours + mins / 60 + 0.5)
                     end
                 end
+
                 for day, hours in pairs(data.schedule_data) do
                     for h = 0, 23 do
                         -- Compare this hour's state against the previous hour to find transitions.
@@ -251,7 +251,16 @@ function action_apply()
                             if uci:get("wireless", "kids_wifi_5g") then cmd = cmd .. " && uci set wireless.kids_wifi_5g.disabled=" .. state end
                             if uci:get("wireless", "kids_wifi_6g") then cmd = cmd .. " && uci set wireless.kids_wifi_6g.disabled=" .. state end
                             cmd = cmd .. " && uci commit wireless && wifi reload"
-                            table.insert(new_cron, string.format("0 %d * * %s %s", h, days_map[day], cmd))
+
+                            -- Convert the local hour to UTC for the cron expression.
+                            -- If the shift crosses midnight the day-of-week must also roll.
+                            local utc_h   = (h - tz_offset) % 24
+                            local day_num = tonumber(days_map[day]) or 0
+                            local day_shift = 0
+                            if (h - tz_offset) < 0  then day_shift = -1 end
+                            if (h - tz_offset) >= 24 then day_shift =  1 end
+                            local utc_dow = (day_num + day_shift) % 7
+                            table.insert(new_cron, string.format("0 %d * * %d %s", utc_h, utc_dow, cmd))
                         end
                     end
                 end
