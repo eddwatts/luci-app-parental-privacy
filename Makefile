@@ -39,6 +39,7 @@ define Package/luci-app-parental-privacy/install
 
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/bandwidth.sh $(1)/usr/share/parental-privacy/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/block-doh.sh $(1)/usr/share/parental-privacy/
+	$(INSTALL_BIN) ./files/safesearch.sh $(1)/usr/share/parental-privacy/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/99-parental-privacy $(1)/etc/uci-defaults/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/30-kids-wifi $(1)/etc/hotplug.d/button/
 
@@ -49,5 +50,6 @@ define Package/luci-app-parental-privacy/install
 endef
 
 $(eval $(call BuildPackage,luci-app-parental-privacy))
+
 
 
