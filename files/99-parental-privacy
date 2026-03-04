@@ -1,18 +1,22 @@
 #!/bin/sh
+# 99-parental-privacy (bridge edition)
+# Compatible with all OpenWrt hardware.
+# Uses a separate routed bridge (br-kids) for network isolation.
 
-# 1. Improved Subnet Selection
-# Using 172.28.10.1 reduces the chance of conflicts with common 192.168.x.x home nets.
 KIDS_IP="172.28.10.1"
 KIDS_NET="172.28.10.0/24"
 INSTALL_DIR="/usr/share/parental-privacy"
 
+# Ensure installed scripts are executable
 mkdir -p "$INSTALL_DIR"
-# Ensure scripts installed by the package are executable
 for script in bandwidth.sh block-doh.sh; do
     [ -f "$INSTALL_DIR/$script" ] && chmod +x "$INSTALL_DIR/$script"
 done
 
-# Set initial School Schedule in UCI
+# ── Initial Schedule ────────────────────────────────────────────────────────
+uci -q batch <<'EOF'
+set parental_privacy.default=config
+EOF
 for day in Mon Tue Wed Thu Sun; do
     uci set parental_privacy.default.schedule_$day='06:00-20:00'
 done
@@ -21,22 +25,22 @@ for day in Fri Sat; do
 done
 uci commit parental_privacy
 
-# 2. Dynamic SSID Detection
+# ── Dynamic SSID ────────────────────────────────────────────────────────────
 PRIMARY_SSID=$(uci get wireless.@wifi-iface[0].ssid 2>/dev/null)
 [ -z "$PRIMARY_SSID" ] && PRIMARY_SSID="OpenWrt"
 KIDS_SSID="${PRIMARY_SSID}_Kids"
 
-# 3. Create the Network Interface
+# ── 1. Network Interface (routed bridge) ────────────────────────────────────
 if ! uci get network.kids >/dev/null 2>&1; then
-    uci set network.kids=interface 
-    uci set network.kids.proto='static' 
-    uci set network.kids.device='br-kids' 
-    uci set network.kids.type='bridge' 
+    uci set network.kids=interface
+    uci set network.kids.proto='static'
+    uci set network.kids.device='br-kids'
+    uci set network.kids.type='bridge'
     uci set network.kids.ipaddr="$KIDS_IP"
-    uci set network.kids.netmask='255.255.255.0' 
+    uci set network.kids.netmask='255.255.255.0'
 fi
 
-# 4. Configure DHCP and DNS (Cloudflare Family)
+# ── 2. DHCP ─────────────────────────────────────────────────────────────────
 if ! uci get dhcp.kids >/dev/null 2>&1; then
     uci set dhcp.kids=dhcp
     uci set dhcp.kids.interface='kids'
@@ -46,15 +50,21 @@ if ! uci get dhcp.kids >/dev/null 2>&1; then
     uci add_list dhcp.kids.dhcp_option="6,1.1.1.3,1.0.0.3"
 fi
 
-# 5. Setup Firewall Isolation & DNS Hijacking
+# ── 3. Firewall ─────────────────────────────────────────────────────────────
 if ! uci get firewall.kids_zone >/dev/null 2>&1; then
+    # Zone
     uci set firewall.kids_zone=zone
     uci set firewall.kids_zone.name='kids'
     uci set firewall.kids_zone.network='kids'
     uci set firewall.kids_zone.input='REJECT'
     uci set firewall.kids_zone.forward='REJECT'
     uci set firewall.kids_zone.output='ACCEPT'
+    # masq ensures single NAT at WAN regardless of upstream config.
+    # Without this, non-standard WAN setups (PPPoE, routed /29) drop kids traffic.
+    uci set firewall.kids_zone.masq='1'
+    uci set firewall.kids_zone.masq_allow_invalid='1'
 
+    # Allow DHCP
     uci set firewall.kids_dhcp=rule
     uci set firewall.kids_dhcp.name='Allow-Kids-DHCP'
     uci set firewall.kids_dhcp.src='kids'
@@ -62,6 +72,7 @@ if ! uci get firewall.kids_zone >/dev/null 2>&1; then
     uci set firewall.kids_dhcp.dest_port='67'
     uci set firewall.kids_dhcp.target='ACCEPT'
 
+    # Allow DNS to router (dnsmasq handles it)
     uci set firewall.kids_dns=rule
     uci set firewall.kids_dns.name='Allow-Kids-DNS'
     uci set firewall.kids_dns.src='kids'
@@ -69,6 +80,7 @@ if ! uci get firewall.kids_zone >/dev/null 2>&1; then
     uci set firewall.kids_dns.dest_port='53'
     uci set firewall.kids_dns.target='ACCEPT'
 
+    # Intercept any DNS not aimed at the router and redirect it back
     uci set firewall.kids_dns_intercept=redirect
     uci set firewall.kids_dns_intercept.name='Intercept-Kids-DNS'
     uci set firewall.kids_dns_intercept.src='kids'
@@ -77,19 +89,21 @@ if ! uci get firewall.kids_zone >/dev/null 2>&1; then
     uci set firewall.kids_dns_intercept.proto='tcp udp'
     uci set firewall.kids_dns_intercept.target='DNAT'
 
-    uci set firewall.kids_forward=forwarding
-    uci set firewall.kids_forward.src='kids'
-    uci set firewall.kids_forward.dest='wan'
-
+    # Allow ICMP so ping/traceroute works for troubleshooting
     uci set firewall.kids_icmp=rule
     uci set firewall.kids_icmp.name='Allow-Kids-ICMP'
     uci set firewall.kids_icmp.src='kids'
     uci set firewall.kids_icmp.proto='icmp'
     uci set firewall.kids_icmp.target='ACCEPT'
+
+    # Forward kids → WAN only (not to home LAN)
+    uci set firewall.kids_forward=forwarding
+    uci set firewall.kids_forward.src='kids'
+    uci set firewall.kids_forward.dest='wan'
 fi
 
-# 6. Initialize Wireless (Radio0 and Radio1)
-# Radio0 (2.4GHz)
+# ── 4. Wireless ─────────────────────────────────────────────────────────────
+# 2.4 GHz
 RADIO_2G=$(uci show wireless | grep -E "hwmode='11g'|band='2g'" | head -n1 | cut -d. -f2)
 [ -z "$RADIO_2G" ] && RADIO_2G="radio0"
 if ! uci get wireless.kids_wifi >/dev/null 2>&1; then
@@ -103,7 +117,7 @@ if ! uci get wireless.kids_wifi >/dev/null 2>&1; then
     uci set wireless.kids_wifi.disabled='1'
 fi
 
-# Radio1 (5GHz) if exists
+# 5 GHz (if present)
 RADIO_5G=$(uci show wireless | grep -E "hwmode='11a'|band='5g'" | head -n1 | cut -d. -f2)
 if [ -n "$RADIO_5G" ]; then
     if ! uci get wireless.kids_wifi_5g >/dev/null 2>&1; then
@@ -118,10 +132,8 @@ if [ -n "$RADIO_5G" ]; then
     fi
 fi
 
-# Detect 6GHz radio
+# 6 GHz (if present — requires WPA3/SAE)
 RADIO_6G=$(uci show wireless | grep -E "band='6g'" | head -n1 | cut -d. -f2)
-
-# Apply 6GHz Config (only if RADIO_6G was found)
 if [ -n "$RADIO_6G" ]; then
     if ! uci get wireless.kids_wifi_6g >/dev/null 2>&1; then
         uci set wireless.kids_wifi_6g=wifi-iface
@@ -129,13 +141,13 @@ if [ -n "$RADIO_6G" ]; then
         uci set wireless.kids_wifi_6g.network='kids'
         uci set wireless.kids_wifi_6g.mode='ap'
         uci set wireless.kids_wifi_6g.ssid="$KIDS_SSID"
-        # 6GHz REQUIRES sae (WPA3) - psk2 will not work on this band
         uci set wireless.kids_wifi_6g.encryption='sae'
         uci set wireless.kids_wifi_6g.key='KidsSafePassword'
         uci set wireless.kids_wifi_6g.disabled='1'
     fi
 fi
 
+# ── Commit & Restart ─────────────────────────────────────────────────────────
 uci commit network
 uci commit dhcp
 uci commit firewall
