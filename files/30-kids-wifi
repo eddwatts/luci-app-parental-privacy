@@ -1,23 +1,70 @@
 #!/bin/sh
+# /etc/hotplug.d/button/30-kids-wifi
+#
+# Handles physical button/slider control of the Kids WiFi network.
+# Each button type must be explicitly enabled in the parental_privacy UCI
+# config (via the dashboard Hardware panel) before it will act.
+#
+# Supported triggers:
+#   BTN_0       — GL.iNet hardware slider (pressed=ON, released=OFF)
+#   wps         — WPS button (toggle on press)
+#   reset       — Reset button (toggle on press)
+#   gpio/<pin>  — Custom GPIO pin (slider: pressed=ON, released=OFF)
 
-# This handles the GL.iNet Slider (BTN_0) and standard WPS buttons (wps/reset)
-if [ "$BUTTON" = "BTN_0" ] || [ "$BUTTON" = "wps" ]; then
-    # For a slider: 'pressed' is one side, 'released' is the other
-    # For a button: 'pressed' is a single click toggle
-    
-    CURRENT_STATE=$(uci get wireless.kids_wifi.disabled)
-    
-    if [ "$ACTION" = "pressed" ]; then
-        if [ "$BUTTON" = "BTN_0" ] || [ "$CURRENT_STATE" = "1" ]; then
-            STATE='0'
-        else
-            STATE='1'
-        fi
-        uci set wireless.kids_wifi.disabled="$STATE"
-        [ -z "$(uci get wireless.kids_wifi_5g 2>/dev/null)" ]  || uci set wireless.kids_wifi_5g.disabled="$STATE"
-        [ -z "$(uci get wireless.kids_wifi_6g 2>/dev/null)" ]  || uci set wireless.kids_wifi_6g.disabled="$STATE"
-    fi
-    
+# ── Helper: set all kids bands to the same state ─────────────────────────────
+set_kids_wifi() {
+    STATE="$1"
+    uci set wireless.kids_wifi.disabled="$STATE"
+    uci -q get wireless.kids_wifi_5g >/dev/null 2>&1 && \
+        uci set wireless.kids_wifi_5g.disabled="$STATE"
+    uci -q get wireless.kids_wifi_6g >/dev/null 2>&1 && \
+        uci set wireless.kids_wifi_6g.disabled="$STATE"
     uci commit wireless
     wifi reload
+    logger -t parental-privacy "Kids WiFi $([ "$STATE" = "0" ] && echo enabled || echo disabled) via button ($BUTTON/$ACTION)"
+}
+
+# ── Read enabled flags and configured GPIO pin ────────────────────────────────
+ENABLE_BTN0=$(uci -q get parental_privacy.default.button_btn0)
+ENABLE_WPS=$(uci -q get parental_privacy.default.button_wps)
+ENABLE_RESET=$(uci -q get parental_privacy.default.button_reset)
+GPIO_PIN=$(uci -q get parental_privacy.default.gpio_pin)
+GPIO_BUTTON=""
+[ -n "$GPIO_PIN" ] && GPIO_BUTTON="gpio/$GPIO_PIN"
+
+# ── BTN_0 slider: pressed=ON, released=OFF ────────────────────────────────────
+if [ "$BUTTON" = "BTN_0" ] && [ "$ENABLE_BTN0" = "1" ]; then
+    case "$ACTION" in
+        pressed)  set_kids_wifi "0" ;;
+        released) set_kids_wifi "1" ;;
+    esac
+
+# ── Custom GPIO slider: pressed=ON, released=OFF ──────────────────────────────
+elif [ -n "$GPIO_BUTTON" ] && [ "$BUTTON" = "$GPIO_BUTTON" ]; then
+    case "$ACTION" in
+        pressed)  set_kids_wifi "0" ;;
+        released) set_kids_wifi "1" ;;
+    esac
+
+# ── WPS button: toggle on press ───────────────────────────────────────────────
+elif [ "$BUTTON" = "wps" ] && [ "$ENABLE_WPS" = "1" ]; then
+    if [ "$ACTION" = "pressed" ]; then
+        CURRENT=$(uci -q get wireless.kids_wifi.disabled)
+        if [ "$CURRENT" = "1" ]; then
+            set_kids_wifi "0"
+        else
+            set_kids_wifi "1"
+        fi
+    fi
+
+# ── Reset button: toggle on press ────────────────────────────────────────────
+elif [ "$BUTTON" = "reset" ] && [ "$ENABLE_RESET" = "1" ]; then
+    if [ "$ACTION" = "pressed" ]; then
+        CURRENT=$(uci -q get wireless.kids_wifi.disabled)
+        if [ "$CURRENT" = "1" ]; then
+            set_kids_wifi "0"
+        else
+            set_kids_wifi "1"
+        fi
+    fi
 fi
