@@ -180,7 +180,7 @@ function action_apply()
 
         elseif data.stage == "gpio" then
             -- Store GPIO pin for hotplug scripts
-            uci:set("system", "@system[0]", "kids_gpio", data.gpio_pin)
+            uci:set("parental_privacy", "default", "gpio_pin", data.gpio_pin)
 
         -- 2. FLAT DATA LOGIC (For Dashboard Saves)
         else
@@ -275,7 +275,6 @@ function action_apply()
         uci:commit("wireless")
         uci:commit("dhcp")
         uci:commit("firewall")
-        uci:commit("system")
         sys.call("wifi reload & /etc/init.d/dnsmasq restart & /etc/init.d/firewall restart")
     end)
 
