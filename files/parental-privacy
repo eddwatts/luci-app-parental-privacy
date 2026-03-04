@@ -1,0 +1,24 @@
+#!/bin/sh /etc/rc.common
+
+START=95 # Start late in the boot process
+USE_PROCD=1
+
+start_service() {
+    # Re-apply SafeSearch configuration [cite: 58]
+    /usr/share/parental-privacy/safesearch.sh enable
+
+    # Re-apply DoH Blocking rules [cite: 23]
+    /usr/share/parental-privacy/block-doh.sh enable
+    
+    # Re-apply Bandwidth limits if configured
+    LIMIT=$(uci -q get parental_privacy.default.bandwidth)
+    if [ -n "$LIMIT" ]; then
+        /usr/share/parental-privacy/bandwidth.sh "$LIMIT"
+    fi
+}
+
+service_triggers() {
+    # This is the "magic": it re-runs start_service 
+    # automatically whenever the firewall reloads.
+    procd_add_reload_trigger "firewall" "network"
+}
