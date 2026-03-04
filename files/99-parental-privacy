@@ -179,6 +179,8 @@ fi
 /usr/share/parental-privacy/safesearch.sh enable
 
 # ── Commit & Restart ─────────────────────────────────────────────────────────
+
+/etc/init.d/parental-privacy enable
 uci commit network
 uci commit dhcp
 uci commit firewall
@@ -187,5 +189,7 @@ uci commit wireless
 /etc/init.d/network restart
 /etc/init.d/dnsmasq restart
 /etc/init.d/firewall restart
+/etc/init.d/parental-privacy start
+logger -t parental-privacy "bridge edition setup complete. Service parental-privacy is now active."
 
 exit 0
