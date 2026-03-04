@@ -37,16 +37,17 @@ define Package/luci-app-parental-privacy/install
 	$(INSTALL_DIR) $(1)/etc/uci-defaults
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/button
 
-	$(INSTALL_BIN) ./files/bandwidth.sh $(1)/usr/share/parental-privacy/
-	$(INSTALL_BIN) ./files/block-doh.sh $(1)/usr/share/parental-privacy/
-	$(INSTALL_BIN) ./files/99-parental-privacy $(1)/etc/uci-defaults/
-	$(INSTALL_BIN) ./files/30-kids-wifi $(1)/etc/hotplug.d/button/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/bandwidth.sh $(1)/usr/share/parental-privacy/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/block-doh.sh $(1)/usr/share/parental-privacy/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/99-parental-privacy $(1)/etc/uci-defaults/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/30-kids-wifi $(1)/etc/hotplug.d/button/
 
-	$(INSTALL_DATA) ./files/parental_privacy.lua $(1)/usr/lib/lua/luci/controller/
-	$(INSTALL_DATA) ./files/kids_network.htm $(1)/usr/lib/lua/luci/view/parental_privacy/
-	$(INSTALL_DATA) ./files/wizard.htm $(1)/usr/lib/lua/luci/view/parental_privacy/
-	$(INSTALL_DATA) ./files/luci-app-parental-privacy.json $(1)/usr/share/rpcd/acl.d/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/files/parental_privacy.lua $(1)/usr/lib/lua/luci/controller/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/files/kids_network.htm $(1)/usr/lib/lua/luci/view/parental_privacy/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/files/wizard.htm $(1)/usr/lib/lua/luci/view/parental_privacy/
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/files/luci-app-parental-privacy.json $(1)/usr/share/rpcd/acl.d/
 endef
 
 $(eval $(call BuildPackage,luci-app-parental-privacy))
+
 
