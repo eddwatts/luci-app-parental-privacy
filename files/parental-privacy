@@ -1,24 +1,39 @@
 #!/bin/sh /etc/rc.common
 
-START=95 # Start late in the boot process
+# START=95 ensures it runs after firewall and network are fully up[cite: 20, 24].
+START=95
 USE_PROCD=1
 
 start_service() {
-    # Re-apply SafeSearch configuration [cite: 58]
+    procd_open_instance
+    
+    # 1. Re-apply SafeSearch (dnsmasq config) 
     /usr/share/parental-privacy/safesearch.sh enable
 
-    # Re-apply DoH Blocking rules [cite: 23]
+    # 2. Re-apply DoH Blocking (nftables/iptables) 
     /usr/share/parental-privacy/block-doh.sh enable
     
-    # Re-apply Bandwidth limits if configured
+    # 3. Re-apply Bandwidth limits via 'tc'
+    # Pulls the limit directly from your UCI config
     LIMIT=$(uci -q get parental_privacy.default.bandwidth)
     if [ -n "$LIMIT" ]; then
         /usr/share/parental-privacy/bandwidth.sh "$LIMIT"
     fi
+
+    # procd manages the process; since these are scripts that exit,
+    # we don't need to specify a running command here.
+    procd_close_instance
+}
+
+stop_service() {
+    # Clean up when service is stopped or router shuts down 
+    /usr/share/parental-privacy/block-doh.sh disable
+    /usr/share/parental-privacy/bandwidth.sh off
+    /usr/share/parental-privacy/safesearch.sh disable
 }
 
 service_triggers() {
-    # This is the "magic": it re-runs start_service 
-    # automatically whenever the firewall reloads.
-    procd_add_reload_trigger "firewall" "network"
+    # If the firewall reloads, it wipes manual rules. 
+    # This trigger tells procd to run start_service again.
+    procd_add_reload_trigger "firewall" "network" "parental_privacy"
 }
