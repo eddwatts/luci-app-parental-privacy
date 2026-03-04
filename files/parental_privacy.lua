@@ -13,6 +13,7 @@ function index()
     entry({"admin", "network", "parental_privacy", "apply"},  call("action_apply"))
     entry({"admin", "network", "parental_privacy", "status"}, call("action_status"))
     entry({"admin", "network", "parental_privacy", "extend"}, call("action_extend"))
+    entry({"admin", "network", "parental_privacy", "remove"}, call("action_remove"))
 end
 
 function action_kids()
@@ -93,6 +94,19 @@ function action_extend()
 end
 
 -- ──────────────────────────────────────────────────────────────────
+-- Remove: Tears down all Kids Network UCI config and cleans up
+-- ──────────────────────────────────────────────────────────────────
+function action_remove()
+    local sys  = require "luci.sys"
+    local json = require "luci.jsonc"
+    local ok, err = pcall(function()
+        sys.call("/usr/share/parental-privacy/remove.sh")
+    end)
+    luci.http.prepare_content("application/json")
+    luci.http.write(json.stringify({success=ok, error=err}))
+end
+
+-- ──────────────────────────────────────────────────────────────────
 -- Apply: Handles Dashboard Saves and Setup Wizard Stages
 -- ──────────────────────────────────────────────────────────────────
 function action_apply()
@@ -154,6 +168,16 @@ function action_apply()
             set_wifi("disabled", "0")
             uci:set("dhcp", "kids", "dhcp_option", {"6," .. data.dns})
 
+            -- SafeSearch and DoH — wired up in wizard step 2
+            if data.safesearch ~= nil then
+                sys.call("/usr/share/parental-privacy/safesearch.sh " ..
+                    (data.safesearch and "enable" or "disable"))
+            end
+            if data.doh ~= nil then
+                sys.call("/usr/share/parental-privacy/block-doh.sh " ..
+                    (data.doh and "enable" or "disable"))
+            end
+
         elseif data.stage == "gpio" then
             -- Store GPIO pin for hotplug scripts
             uci:set("system", "@system[0]", "kids_gpio", data.gpio_pin)
@@ -185,7 +209,7 @@ function action_apply()
                 local ss_state = data.safesearch and "enable" or "disable"
                 sys.call("/usr/share/parental-privacy/safesearch.sh " .. ss_state)
             end
-                
+
             -- Safe Cron Management
             if data.schedule_data then
                 local new_cron = {}
