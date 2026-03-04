@@ -18,7 +18,7 @@ uci delete network.kids_vlan      2>/dev/null
 uci delete dhcp.kids              2>/dev/null
 
 # ── Firewall ─────────────────────────────────────────────────────────────────
-for key in kids_zone kids_dhcp kids_dns kids_dns_intercept \
+for key in kids_zone kids_dhcp kids_dns kids_dns_intercept kids_dns_intercept6 \
            kids_icmp kids_forward kids_upnp; do
     uci delete firewall.$key 2>/dev/null
 done
