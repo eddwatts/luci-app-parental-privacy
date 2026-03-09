@@ -1,0 +1,73 @@
+#!/bin/sh
+# /etc/hotplug.d/button/30-kids-wifi
+#
+# Handles physical button/slider control of the Kids Network internet access.
+# Each button type must be explicitly enabled in the parental_privacy UCI
+# config (via the dashboard Hardware panel) before it will act.
+#
+# WiFi radios are NEVER toggled — devices stay associated, keep their IPs,
+# and DNS continues to resolve. Internet access is controlled exclusively via
+# a firewall REJECT rule on the kids→wan forward chain (schedule-block.sh).
+# This means wired VLAN devices are blocked identically to WiFi ones.
+#
+# Supported triggers:
+#   BTN_0       — GL.iNet hardware slider (pressed=internet ON, released=OFF)
+#   wps         — WPS button (toggle internet on press)
+#   reset       — Reset button (toggle internet on press)
+#   gpio/<pin>  — Custom GPIO pin (slider: pressed=ON, released=OFF)
+
+BLOCK_SH="/usr/share/parental-privacy/schedule-block.sh"
+
+# ── Helper: set internet access state ────────────────────────────────────────
+# "allow"  — removes the firewall block rule (internet ON)
+# "block"  — installs the firewall block rule (internet OFF)
+set_internet() {
+    local action="$1"  # "allow" or "block"
+    if [ "$action" = "allow" ]; then
+        "$BLOCK_SH" disable
+        logger -t parental-privacy "Kids internet access ALLOWED via button"
+    else
+        "$BLOCK_SH" enable
+        logger -t parental-privacy "Kids internet access BLOCKED via button"
+    fi
+}
+
+# ── Helper: toggle current internet state ────────────────────────────────────
+toggle_internet() {
+    if [ "$("$BLOCK_SH" status)" = "blocked" ]; then
+        set_internet "allow"
+    else
+        set_internet "block"
+    fi
+}
+
+# ── Read enabled flags and configured GPIO pin ────────────────────────────────
+ENABLE_BTN0=$(uci -q get parental_privacy.default.button_btn0)
+ENABLE_WPS=$(uci -q get parental_privacy.default.button_wps)
+ENABLE_RESET=$(uci -q get parental_privacy.default.button_reset)
+GPIO_PIN=$(uci -q get parental_privacy.default.gpio_pin)
+GPIO_BUTTON=""
+[ -n "$GPIO_PIN" ] && GPIO_BUTTON="gpio/$GPIO_PIN"
+
+# ── BTN_0 slider: pressed=internet ON, released=internet OFF ─────────────────
+if [ "$BUTTON" = "BTN_0" ] && [ "$ENABLE_BTN0" = "1" ]; then
+    case "$ACTION" in
+        pressed)  set_internet "allow" ;;
+        released) set_internet "block" ;;
+    esac
+
+# ── Custom GPIO slider: pressed=internet ON, released=internet OFF ────────────
+elif [ -n "$GPIO_BUTTON" ] && [ "$BUTTON" = "$GPIO_BUTTON" ]; then
+    case "$ACTION" in
+        pressed)  set_internet "allow" ;;
+        released) set_internet "block" ;;
+    esac
+
+# ── WPS button: toggle internet access on press ───────────────────────────────
+elif [ "$BUTTON" = "wps" ] && [ "$ENABLE_WPS" = "1" ]; then
+    [ "$ACTION" = "pressed" ] && toggle_internet
+
+# ── Reset button: toggle internet access on press ────────────────────────────
+elif [ "$BUTTON" = "reset" ] && [ "$ENABLE_RESET" = "1" ]; then
+    [ "$ACTION" = "pressed" ] && toggle_internet
+fi
