@@ -148,7 +148,7 @@ The main dashboard shows live device count, active SSID, current DNS resolver, a
 
 ### Bedtime Schedule
 
-![Schedule](docs/screenshot-schedule.svg)
+![Schedule](docs/screenshot-schedule1.svg)
 
 Up to 4 allowed time windows per day. Quick presets include School Days, Strict, Split Day, Weekends Relaxed, and Clear All. Changes are written directly to `/etc/crontabs/root`.
 
