@@ -8,7 +8,7 @@ Automatically detects your hardware and uses the best available isolation method
 
 The wizard, dashboard, schedule, DNS filtering, DoH blocking, and SafeSearch work identically in both modes.
 
-![Dashboard](docs/screenshot-dashboard.svg)
+![Dashboard](docs/screenshot-dashboard1.svg)
 
 ---
 
@@ -140,7 +140,7 @@ When the Kids Network is removed (via the dashboard Remove button or `opkg remov
 
 ### Dashboard
 
-![Dashboard](docs/screenshot-dashboard.svg)
+![Dashboard](docs/screenshot-dashboard1.svg)
 
 ![Dashboard in bridge-mode](docs/screenshot-dashboard-bridge.svg)
 
