@@ -1,10 +1,10 @@
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=luci-app-parental-privacy
+PKG_NAME:=luci-app-parental-privacy-vlan
 PKG_VERSION:=1.2.0
 PKG_RELEASE:=1
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/eddwatts/luci-app-parental-privacy.git
+PKG_SOURCE_URL:=https://github.com/eddwatts/luci-app-parental-privacy-vlan.git
 PKG_SOURCE_VERSION:=main
 PKG_MIRROR_HASH:=<fill-in-after-first-build>
 PKG_MAINTAINER:=Edward Watts <edd@eddtech.co.uk>
@@ -13,7 +13,7 @@ PKG_LICENSE:=GPL-2.0-or-later
 include $(INCLUDE_DIR)/package.mk
 include $(TOPDIR)/feeds/luci/luci.mk
 
-define Package/luci-app-parental-privacy
+define Package/luci-app-parental-privacy-vlan
   SECTION:=luci
   CATEGORY:=LuCI
   SUBMENU:=3. Applications
@@ -22,7 +22,7 @@ define Package/luci-app-parental-privacy
   PKGARCH:=all
 endef
 
-define Package/luci-app-parental-privacy/description
+define Package/luci-app-parental-privacy-vlan/description
   LuCI wizard and dashboard for a fully isolated Kids Network using a
   dedicated VLAN on the main br-lan bridge (DSA/OpenWrt 22.03+ required).
   mac80211 WiFi driver required (ath9k/ath10k/ath11k/mt76).
@@ -151,7 +151,7 @@ define Build/Compile
 	)
 endef
 
-define Package/luci-app-parental-privacy/install
+define Package/luci-app-parental-privacy-vlan/install
 	# ── Directories ───────────────────────────────────────────────────────────
 	$(INSTALL_DIR) $(1)/usr/share/luci/views/parental_privacy
 	$(INSTALL_DIR) $(1)/usr/share/luci/menu.d
@@ -169,8 +169,6 @@ define Package/luci-app-parental-privacy/install
 	# ── Shell scripts ─────────────────────────────────────────────────────────
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/block-doh.sh \
 		$(1)/usr/share/parental-privacy/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/block-dot.sh \
-		$(1)/usr/share/parental-privacy/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/broadcast-relay.sh \
 		$(1)/usr/share/parental-privacy/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/safesearch.sh \
@@ -178,8 +176,6 @@ define Package/luci-app-parental-privacy/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/schedule-block.sh \
 		$(1)/usr/share/parental-privacy/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/remove.sh \
-		$(1)/usr/share/parental-privacy/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/pause-device.sh \
 		$(1)/usr/share/parental-privacy/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/rpc-status.sh \
 		$(1)/usr/share/parental-privacy/
@@ -190,10 +186,6 @@ define Package/luci-app-parental-privacy/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/rpc-remove.sh \
 		$(1)/usr/share/parental-privacy/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/rpc-blocklist.sh \
-		$(1)/usr/share/parental-privacy/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/rpc-pause.sh \
-		$(1)/usr/share/parental-privacy/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/rpc-list-paused.sh \
 		$(1)/usr/share/parental-privacy/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/rpc-get-logs.sh \
 		$(1)/usr/share/parental-privacy/
@@ -217,10 +209,10 @@ define Package/luci-app-parental-privacy/install
 		$(1)/usr/share/luci/views/parental_privacy/
 
 	# ── LuCI menu descriptors ─────────────────────────────────────────────────
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/files/luci-app-parental-privacy.json \
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/files/luci-app-parental-privacy-vlan.json \
 		$(1)/usr/share/luci/menu.d/
 	# ── ACL ───────────────────────────────────────────────────────────────────
-	$(INSTALL_DATA) $(PKG_BUILD_DIR)/files/luci-app-parental-privacy.json \
+	$(INSTALL_DATA) $(PKG_BUILD_DIR)/files/luci-app-parental-privacy-vlan.json \
 		$(1)/usr/share/rpcd/acl.d/
 	# ── DNS blocklists catalog ────────────────────────────────────────────────────
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/files/blocklists.json \
@@ -234,4 +226,4 @@ define Package/luci-app-parental-privacy/install
 	)
 endef
 
-$(eval $(call BuildPackage,luci-app-parental-privacy))
+$(eval $(call BuildPackage,luci-app-parental-privacy-vlan))

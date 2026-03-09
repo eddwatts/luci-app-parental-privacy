@@ -1,0 +1,821 @@
+# Parental Privacy — LuCI application
+# Copyright (C) 2024 Edward Watts
+# This file is distributed under the same license as the luci-app-parental-privacy-vlan package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: luci-app-parental-privacy-vlan 1.2.0\n"
+"POT-Creation-Date: 2026-03-07 00:00+0000
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+#: dashboard.js:329
+msgid "Blocked"
+msgstr ""
+
+#: dashboard.js:333
+msgid "Allowed"
+msgstr ""
+
+#: dashboard.js:347
+msgid "Internet access blocked"
+msgstr ""
+
+#: dashboard.js:348
+msgid "A firewall rule is active. Devices are connected to WiFi and can resolve DNS, but all internet traffic is dropped."
+msgstr ""
+
+#: dashboard.js:352
+msgid "Internet access allowed"
+msgstr ""
+
+#: dashboard.js:353
+msgid "No schedule block is active. Traffic flows normally through the kids VLAN."
+msgstr ""
+
+#: dashboard.js:381
+msgid "Kids WiFi Active"
+msgstr ""
+
+#: dashboard.js:381
+msgid "Kids WiFi Off"
+msgstr ""
+
+#: dashboard.js:437
+msgid "Unblock"
+msgstr ""
+
+#: dashboard.js:437
+msgid "Block"
+msgstr ""
+
+#: dashboard.js:491
+msgid "Switched to suggested SSID"
+msgstr ""
+
+#: dashboard.js:507
+msgid "WiFi is forced ON for the next hour."
+msgstr ""
+
+#: dashboard.js:508
+msgid "Parent granted 60-minute manual extension."
+msgstr ""
+
+#: dashboard.js:516
+msgid "Connection failed"
+msgstr ""
+
+#: dashboard.js:524
+msgid "Applying…"
+msgstr ""
+
+#: dashboard.js:532
+msgid "Save & Apply All"
+msgstr ""
+
+#: dashboard.js:577
+msgid "Settings applied successfully!"
+msgstr ""
+
+#: dashboard.js:594
+msgid "Remove Kids Network? This will delete all Kids WiFi configuration."
+msgstr ""
+
+msgid "Remove Kids Network? This will delete all Kids WiFi configuration.\n\nYour schedule will be saved to /etc/parental-privacy/schedule.backup and restored automatically if you reinstall."
+msgstr ""
+
+msgid "Kids Network removed."
+msgstr ""
+
+msgid "Kids Network removed. Schedule backed up for reinstall."
+msgstr ""
+
+#: dashboard.js:599
+msgid "Kids Network removed."
+msgstr ""
+
+#: dashboard.js:729
+msgid "Kids Network"
+msgstr ""
+
+#: dashboard.js:730
+msgid "unsaved changes"
+msgstr ""
+
+#: dashboard.js:735
+msgid "All settings for your children's WiFi — managed in one place."
+msgstr ""
+
+#: dashboard.js:744
+msgid "Devices Online"
+msgstr ""
+
+#: dashboard.js:748
+msgid "Active SSID"
+msgstr ""
+
+#: dashboard.js:752
+msgid "DNS Resolver"
+msgstr ""
+
+#: dashboard.js:756
+msgid "Schedule"
+msgstr ""
+
+#: dashboard.js:760
+msgid "Internet Access"
+msgstr ""
+
+#: dashboard.js:767
+msgid "WiFi Settings"
+msgstr ""
+
+#: dashboard.js:768
+msgid "SSID, password, band"
+msgstr ""
+
+#: dashboard.js:774
+msgid "SSID — Network Name"
+msgstr ""
+
+#: dashboard.js:778
+msgid "Use suggested name:"
+msgstr ""
+
+#: dashboard.js:785
+msgid "Password"
+msgstr ""
+
+#: dashboard.js:787
+msgid "min. 8 characters"
+msgstr ""
+
+#: dashboard.js:788
+msgid "Minimum 8 characters for WPA2-PSK encryption."
+msgstr ""
+
+#: dashboard.js:794
+msgid "Frequency Band"
+msgstr ""
+
+#: dashboard.js:799
+msgid "2.4 GHz"
+msgstr ""
+
+#: dashboard.js:801
+msgid "Better range through walls."
+msgstr ""
+
+#: dashboard.js:805
+msgid "5 GHz"
+msgstr ""
+
+#: dashboard.js:807
+msgid "Faster speeds, shorter range."
+msgstr ""
+
+#: dashboard.js:811
+msgid "6 GHz"
+msgstr ""
+
+#: dashboard.js:813
+msgid "Ultra-fast Wi-Fi 6E/7. Requires WPA3."
+msgstr ""
+
+#: dashboard.js:817
+msgid "All Bands"
+msgstr ""
+
+#: dashboard.js:819
+msgid "Unified SSID across all radios."
+msgstr ""
+
+#: dashboard.js:826
+msgid "Isolate clients from each other"
+msgstr ""
+
+#: dashboard.js:827
+msgid "Prevents devices on this network from talking to each other"
+msgstr ""
+
+#: dashboard.js:836
+msgid "DNS & Content Filtering"
+msgstr ""
+
+#: dashboard.js:837
+msgid "DHCP Option 6 — zero overhead"
+msgstr ""
+
+#: dashboard.js:841
+msgid "DNS Provider"
+msgstr ""
+
+#: dashboard.js:846
+msgid "Family Safe"
+msgstr ""
+
+#: dashboard.js:847
+msgid "Cloudflare Family"
+msgstr ""
+
+#: dashboard.js:849
+msgid "Blocks malware + adult content."
+msgstr ""
+
+#: dashboard.js:853
+msgid "Strict"
+msgstr ""
+
+#: dashboard.js:854
+msgid "CleanBrowsing"
+msgstr ""
+
+#: dashboard.js:856
+msgid "Blocks adult content, proxies & VPN bypass sites."
+msgstr ""
+
+#: dashboard.js:861
+msgid "OpenDNS Family"
+msgstr ""
+
+#: dashboard.js:863
+msgid "Cisco-backed. Blocks adult content."
+msgstr ""
+
+#: dashboard.js:867
+msgid "Malware Only"
+msgstr ""
+
+#: dashboard.js:868
+msgid "Quad9 Secure"
+msgstr ""
+
+#: dashboard.js:870
+msgid "Blocks malware/phishing only."
+msgstr ""
+
+#: dashboard.js:875
+msgid "AdGuard Family"
+msgstr ""
+
+#: dashboard.js:877
+msgid "Blocks ads, trackers & adult content."
+msgstr ""
+
+#: dashboard.js:881
+msgid "Custom"
+msgstr ""
+
+#: dashboard.js:882
+msgid "Custom DNS"
+msgstr ""
+
+#: dashboard.js:884
+msgid "Enter any DNS resolver IP manually."
+msgstr ""
+
+#: dashboard.js:894
+msgid "Block DNS-over-HTTPS (DoH) bypass"
+msgstr ""
+
+#: dashboard.js:895
+msgid "Blocks known DoH providers so browsers cannot silently bypass the DNS filter"
+msgstr ""
+
+#: dashboard.js:898
+msgid "Block DNS-over-TLS (DoT) bypass"
+msgstr ""
+
+#: dashboard.js:899
+msgid "Blocks port 853 so devices cannot use encrypted DNS-over-TLS to bypass the DNS filter"
+msgstr ""
+
+#: wizard.js:296
+msgid "Block DNS-over-TLS bypass"
+msgstr ""
+
+#: wizard.js:297
+msgid "Blocks port 853 so devices cannot use encrypted DNS-over-TLS to bypass the filter. Recommended."
+msgstr ""
+
+#: dashboard.js:901
+msgid "SafeSearch enforcement"
+msgstr ""
+
+#: dashboard.js:902
+msgid "Forces SafeSearch on Google, Bing, YouTube, DuckDuckGo, Brave and Pixabay via DNS CNAME"
+msgstr ""
+
+#: dashboard.js:906
+msgid "YouTube restriction level"
+msgstr ""
+
+#: dashboard.js:907
+msgid "Moderate blocks most adult content. Strict enables supervised mode — very locked down, may block legitimate videos."
+msgstr ""
+
+#: dashboard.js:912
+msgid "Moderate"
+msgstr ""
+
+#: dashboard.js:913
+msgid "Strict"
+msgstr ""
+
+#: dashboard.js:917
+msgid "Block uncontrolled search engines"
+msgstr ""
+
+#: dashboard.js:918
+msgid "Blocks search engines that cannot enforce SafeSearch at DNS level (e.g. Yandex, Baidu, Startpage, Ecosia). Prevents bypassing SafeSearch by switching to an unsupported engine."
+msgstr ""
+
+#: dashboard.js:911
+msgid "Bedtime Schedule"
+msgstr ""
+
+#: dashboard.js:912
+msgid "Up to 4 allowed time ranges per day"
+msgstr ""
+
+#: dashboard.js:927
+msgid "How this schedule works"
+msgstr ""
+
+#: dashboard.js:928
+msgid "During blocked hours the WiFi remains on — devices stay connected and keep their IP address. A firewall rule silently drops all internet traffic from the kids network. DNS still resolves and pings still work, so devices show as connected but cannot load pages or apps. Wired devices on the kids VLAN are affected in exactly the same way."
+msgstr ""
+
+#: dashboard.js:929
+msgid "Outside the allowed windows the block rule is installed automatically via cron. The 'Grant extension' button removes it immediately for one hour, then reinstates it — no WiFi restart required at any point."
+msgstr ""
+
+#: dashboard.js:933
+msgid "Leave a day empty for unrestricted access. Ranges must not overlap."
+msgstr ""
+
+#: dashboard.js:935
+msgid "Apply preset…"
+msgstr ""
+
+#: dashboard.js:936
+msgid "School days"
+msgstr ""
+
+#: dashboard.js:937
+msgid "Strict (9am–7pm)"
+msgstr ""
+
+#: dashboard.js:938
+msgid "Split day (before/after school)"
+msgstr ""
+
+#: dashboard.js:939
+msgid "Weekdays limited, weekends relaxed"
+msgstr ""
+
+#: dashboard.js:940
+msgid "All day (no restriction)"
+msgstr ""
+
+#: dashboard.js:941
+msgid "Clear all"
+msgstr ""
+
+#: dashboard.js:950
+msgid "Connected Devices"
+msgstr ""
+
+#: dashboard.js:954
+msgid "Loading…"
+msgstr ""
+
+#: dashboard.js:956
+msgid "Grant 1-hour extension"
+msgstr ""
+
+#: dashboard.js:1004
+msgid "Cross-Network Discovery"
+msgstr ""
+
+#: dashboard.js:1005
+msgid "mDNS, SSDP, Steam, Minecraft, printing"
+msgstr ""
+
+#: dashboard.js:1010
+msgid "Enable broadcast relay"
+msgstr ""
+
+#: dashboard.js:1011
+msgid "Allows kids-network devices to discover and use services on your main network — printers, Chromecast, AirPlay, game servers (Steam, Minecraft) and more. Requires udp-broadcast-relay-redux to be installed."
+msgstr ""
+
+#: dashboard.js:963
+msgid "Hardware Buttons"
+msgstr ""
+
+#: dashboard.js:964
+msgid "Physical controls"
+msgstr ""
+
+#: dashboard.js:969
+msgid "BTN_0 / slider (GL.iNet)"
+msgstr ""
+
+#: dashboard.js:970
+msgid "Pressed = ON, Released = OFF"
+msgstr ""
+
+#: dashboard.js:976
+msgid "WPS button (toggle)"
+msgstr ""
+
+#: dashboard.js:977
+msgid "Press to toggle Kids WiFi on/off"
+msgstr ""
+
+#: dashboard.js:983
+msgid "Reset button (toggle)"
+msgstr ""
+
+#: dashboard.js:984
+msgid "Press to toggle — hold 10s still factory resets"
+msgstr ""
+
+#: dashboard.js:990
+msgid "Custom GPIO pin"
+msgstr ""
+
+#: dashboard.js:991
+msgid "GPIO pin number for a hardware slider (leave blank to disable)"
+msgstr ""
+
+#: dashboard.js:1000
+msgid "Activity Log"
+msgstr ""
+
+#: dashboard.js:1013
+msgid "Remove Kids Network"
+msgstr ""
+
+#: wizard.js:117
+msgid "Unknown error"
+msgstr ""
+
+#: wizard.js:119
+msgid "Apply Configuration"
+msgstr ""
+
+#: wizard.js:130
+msgid "All settings applied successfully! Taking you to the dashboard…"
+msgstr ""
+
+#: wizard.js:189
+msgid "Parental Privacy Wizard"
+msgstr ""
+
+#: wizard.js:196
+msgid "Kids network already configured (SSID:"
+msgstr ""
+
+#: wizard.js:198
+msgid "Completing this wizard will overwrite your existing settings."
+msgstr ""
+
+#: wizard.js:200
+msgid "Go to dashboard instead"
+msgstr ""
+
+#: wizard.js:205
+msgid "1. Primary DNS"
+msgstr ""
+
+#: wizard.js:206
+msgid "2. Kids WiFi"
+msgstr ""
+
+#: wizard.js:207
+msgid "3. Hardware Button"
+msgstr ""
+
+#: wizard.js:212
+msgid "Secure Your Main Network"
+msgstr ""
+
+#: wizard.js:214
+msgid "Every time a device visits a website it asks a DNS server for directions. Choosing a protective DNS like Quad9 blocks known malware and scam sites before they load — with zero performance overhead."
+msgstr ""
+
+#: wizard.js:218
+msgid "ISP Default"
+msgstr ""
+
+#: wizard.js:219
+msgid "Uses your internet provider's DNS. May satisfy 12-month data retention mandates."
+msgstr ""
+
+#: wizard.js:222
+msgid "Quad9 — Malware Shield"
+msgstr ""
+
+#: wizard.js:223
+msgid "Blocks known malware and phishing. No logging. Non-profit, Switzerland-based."
+msgstr ""
+
+#: wizard.js:226
+msgid "Cloudflare — Privacy and Malware Protection"
+msgstr ""
+
+#: wizard.js:227
+msgid "Fastest public DNS resolver. Privacy-focused, protection from malware, minimal data retention."
+msgstr ""
+
+#: wizard.js:230
+msgid "Cloudflare — Privacy"
+msgstr ""
+
+#: wizard.js:231
+msgid "Fastest public DNS resolver. Privacy-focused, minimal data retention."
+msgstr ""
+
+#: wizard.js:234
+msgid "AdGuard DNS — Ad Blocking"
+msgstr ""
+
+#: wizard.js:235
+msgid "Blocks ads and trackers for every device on your network. No setup required."
+msgstr ""
+
+#: wizard.js:240
+msgid "Next: Kids WiFi"
+msgstr ""
+
+#: wizard.js:247
+msgid "Kids WiFi Fortress"
+msgstr ""
+
+#: wizard.js:249
+msgid "This creates a separate WiFi on its own subnet. DHCP Option 6 forces every connected device to use a family-safe DNS — and a firewall rule blocks any attempt to bypass it. No accounts or ID checks ever required."
+msgstr ""
+
+#: wizard.js:254
+msgid "Network Name (SSID)"
+msgstr ""
+
+#: wizard.js:257
+msgid "Please enter a network name."
+msgstr ""
+
+#: wizard.js:260
+msgid "Password (min. 8 characters)"
+msgstr ""
+
+#: wizard.js:261
+msgid "min. 8 chars"
+msgstr ""
+
+#: wizard.js:263
+msgid "Password must be at least 8 characters."
+msgstr ""
+
+#: wizard.js:267
+msgid "Choose Family DNS"
+msgstr ""
+
+#: wizard.js:269
+msgid "Cloudflare for Families"
+msgstr ""
+
+#: wizard.js:270
+msgid "Blocks malware and adult content. No account needed."
+msgstr ""
+
+#: wizard.js:274
+msgid "Strict family filter — blocks adult content, proxies, and VPN sites."
+msgstr ""
+
+#: wizard.js:277
+msgid "OpenDNS FamilyShield"
+msgstr ""
+
+#: wizard.js:278
+msgid "Cisco-backed. Blocks adult content automatically, no account required."
+msgstr ""
+
+#: wizard.js:285
+msgid "Force SafeSearch"
+msgstr ""
+
+#: wizard.js:286
+msgid "Enforces safe results on Google, Bing, YouTube, DuckDuckGo, Brave and Pixabay at DNS level — no device cooperation needed."
+msgstr ""
+
+#: wizard.js:289
+msgid "YouTube restriction level"
+msgstr ""
+
+#: wizard.js:290
+msgid "Moderate blocks most adult content. Strict enables supervised mode — very locked down, may block legitimate videos."
+msgstr ""
+
+#: wizard.js:293
+msgid "Moderate"
+msgstr ""
+
+#: wizard.js:294
+msgid "Strict"
+msgstr ""
+
+#: wizard.js:298
+msgid "Block uncontrolled search engines"
+msgstr ""
+
+#: wizard.js:299
+msgid "Blocks search engines that cannot enforce SafeSearch at DNS level (e.g. Yandex, Baidu, Startpage, Ecosia). Prevents bypassing SafeSearch by switching to an unsupported engine."
+msgstr ""
+
+#: wizard.js:292
+msgid "Block DNS-over-HTTPS bypass"
+msgstr ""
+
+#: wizard.js:293
+msgid "Prevents browsers silently bypassing the DNS filter using encrypted DNS. Recommended."
+msgstr ""
+
+#: wizard.js:299
+msgid "Back"
+msgstr ""
+
+#: wizard.js:301
+msgid "Next: Hardware Button"
+msgstr ""
+
+#: wizard.js:308
+msgid "Hardware Kill-Switch (Optional)"
+msgstr ""
+
+#: wizard.js:310
+msgid "Assign a physical button on your router (e.g. the WPS button) to instantly toggle the Kids WiFi on or off. The wizard writes a hotplug script — no reboot needed, takes effect immediately on press."
+msgstr ""
+
+#: wizard.js:315
+msgid "Enable hardware button toggle"
+msgstr ""
+
+#: wizard.js:319
+msgid "GPIO Pin / Button ID"
+msgstr ""
+
+#: wizard.js:321
+msgid "Common values: 0 = WPS button, 11 = Reset. Check your router's hardware page on the OpenWrt wiki for the correct pin number."
+msgstr ""
+
+msgid "Block VPN & Bypass Tools"
+msgstr "Block VPN & Bypass Tools"
+
+msgid "Blocks common VPN ports (OpenVPN, WireGuard, IPSec) to prevent filter bypassing."
+msgstr "Blocks common VPN ports (OpenVPN, WireGuard, IPSec) to prevent filter bypassing."
+
+msgid "Block Undesirable Apps"
+msgstr "Block Undesirable Apps"
+
+msgid "Prevents access to TikTok and Snapchat domains."
+msgstr "Prevents access to TikTok and Snapchat domains."
+# ── Additional Protection — DNS Blocklists (dashboard.js) ─────────────────────
+
+#: dashboard.js:1304
+msgid "Additional Protection — DNS Blocklists"
+msgstr ""
+
+#: dashboard.js:1305
+msgid "Blocks are applied at DNS level on the kids dnsmasq instance only. Updated nightly at 3 AM."
+msgstr ""
+
+#: dashboard.js:1312
+msgid "How this works"
+msgstr ""
+
+#: dashboard.js:1313
+msgid "Checked lists are downloaded and merged into a single deduplicated file at /etc/dnsmasq.kids.d/dns_blocklist.conf, which the kids dnsmasq instance picks up automatically via its confdir setting. Large HaGeZi lists are automatically substituted with the Light version when router RAM is below 32 MB free. Updates run at 3 AM to avoid peak usage. Each update is syntax-checked before going live; if it fails, the previous list is restored automatically."
+msgstr ""
+
+#: dashboard.js:1309
+msgid "Loading update statistics…"
+msgstr ""
+
+#: dashboard.js:811
+msgid "Last update: "
+msgstr ""
+
+#: dashboard.js:812
+msgid " entries"
+msgstr ""
+
+#: dashboard.js:813
+msgid " dupes removed"
+msgstr ""
+
+#: dashboard.js:814
+msgid " lists skipped (low RAM)"
+msgstr ""
+
+#: dashboard.js:1318
+msgid "Pre-configured Lists"
+msgstr ""
+
+#: dashboard.js:1319
+msgid "Loading catalog…"
+msgstr ""
+
+#: dashboard.js:1320
+msgid "Reload Catalog"
+msgstr ""
+
+#: dashboard.js:1323
+msgid "Loading from GitHub…"
+msgstr ""
+
+#: dashboard.js:656
+msgid "Could not load blocklist catalog from GitHub. Check your internet connection or add lists manually below."
+msgstr ""
+
+#: dashboard.js:683
+msgid "Large — needs 32 MB+ RAM"
+msgstr ""
+
+#: dashboard.js:684
+msgid "Small"
+msgstr ""
+
+#: dashboard.js:1328
+msgid "Custom Lists"
+msgstr ""
+
+#: dashboard.js:1329
+msgid "Add any dnsmasq-format blocklist URL (address= or server= lines)."
+msgstr ""
+
+#: dashboard.js:1331
+msgid "No custom lists added yet."
+msgstr ""
+
+#: dashboard.js:1335
+msgid "Label (optional)"
+msgstr ""
+
+#: dashboard.js:1337
+msgid "https://example.com/blocklist.txt"
+msgstr ""
+
+#: dashboard.js:1304
+msgid "Add"
+msgstr ""
+
+#: dashboard.js:764
+msgid "Remove"
+msgstr ""
+
+#: dashboard.js:742
+msgid "Custom list added."
+msgstr ""
+
+#: dashboard.js:729
+msgid "Please enter a URL for the custom list."
+msgstr ""
+
+#: dashboard.js:730
+msgid "URL must start with http:// or https://"
+msgstr ""
+
+#: dashboard.js:786
+msgid "Update Now"
+msgstr ""
+
+#: dashboard.js:1347
+msgid "Runs the download &amp; dedup immediately rather than waiting for 3 AM."
+msgstr ""
+
+#: dashboard.js:773
+msgid "Updating…"
+msgstr ""
+
+#: dashboard.js:774
+msgid "Manual blocklist update triggered…"
+msgstr ""
+
+#: dashboard.js:778
+msgid "Blocklist update started in background."
+msgstr ""
+
+#: dashboard.js:779
+msgid "Blocklist update running — check status in a minute."
+msgstr ""
+
+#: dashboard.js:781
+msgid "Update failed: "
+msgstr ""

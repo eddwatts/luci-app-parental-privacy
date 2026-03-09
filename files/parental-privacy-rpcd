@@ -1,0 +1,72 @@
+#!/bin/sh
+# /usr/libexec/rpcd/parental-privacy
+#
+# rpcd backend for luci-app-parental-privacy.
+# Exposes methods to the LuCI JS frontend via ubus/rpcd.
+#
+# Test from CLI:
+#   rpcd call parental-privacy status '{}'
+#   rpcd call parental-privacy extend '{}'
+#   rpcd call parental-privacy remove '{}'
+#   rpcd call parental-privacy get_logs '{}'
+#   echo '{"action":"clear"}' | rpcd call parental-privacy get_logs
+#   echo '{"ssid":"Test_Kids","password":"testpass1"}' | rpcd call parental-privacy apply
+
+SCRIPTS="/usr/share/parental-privacy"
+
+case "$1" in
+    list)
+        # Advertise available methods to rpcd.
+        #
+        # All methods use empty objects {} — no typed parameter declarations.
+        #
+        # Why this matters for 'apply':
+        #   If you declare typed params like {"stage":"string","ssid":"string"},
+        #   rpcd acts as a filter: it extracts only those named keys from the
+        #   incoming payload and discards everything else before passing it to
+        #   the script on stdin.  Our apply payload is a free-form object with
+        #   ~15 keys (ssid, password, dns, schedule, button_config, etc.) that
+        #   varies by context — using typed params would mean rpc-apply.sh
+        #   receives a near-empty object and every json_get call returns null.
+        #
+        #   With {}, rpcd passes the entire raw JSON payload through on stdin
+        #   unchanged, so `read -r INPUT` in rpc-apply.sh captures the full
+        #   object and all json_get/@.field lookups work correctly.
+        cat <<'EOF'
+{
+    "status":           {},
+    "apply":            {},
+    "extend":           {},
+    "remove":           {},
+    "blocklist_apply":  {},
+    "blocklist_update": {},
+    "pause_device":     {},
+    "list_paused":      {},
+    "get_logs":         {},
+    "clear_logs":       {}
+}
+EOF
+        ;;
+    call)
+        case "$2" in
+            status)           exec "$SCRIPTS/rpc-status.sh"  ;;
+            apply)            exec "$SCRIPTS/rpc-apply.sh"   ;;
+            extend)           exec "$SCRIPTS/rpc-extend.sh"  ;;
+            remove)           exec "$SCRIPTS/rpc-remove.sh"  ;;
+            blocklist_apply)  exec "$SCRIPTS/rpc-blocklist.sh" blocklist_apply ;;
+            blocklist_update) exec "$SCRIPTS/rpc-blocklist.sh" blocklist_update ;;
+            pause_device)     exec "$SCRIPTS/rpc-pause.sh"   ;;
+            list_paused)      exec "$SCRIPTS/rpc-list-paused.sh" ;;
+            get_logs)         exec "$SCRIPTS/rpc-get-logs.sh" ;;
+            clear_logs)       echo '{"action":"clear"}' | exec "$SCRIPTS/rpc-get-logs.sh" ;;
+            *)
+                echo '{"error":"unknown method"}'
+                exit 1
+                ;;
+        esac
+        ;;
+    *)
+        echo '{"error":"usage: parental-privacy {list|call <method>}"}'
+        exit 1
+        ;;
+esac
